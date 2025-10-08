@@ -48,6 +48,15 @@ function FaultCard({fault, onDelete, userRole, onProofUpload})
                 </div>
             )}
 
+            {userRole === "Admin" && fault.status === "Proof Submitted" && (
+                <button
+                    onClick={() => onProofUpload("Completed")}
+                    className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                >
+                    Mark as Completed
+                </button>
+            )}
+
 
             <div className="text-sm text-gray-600 mb-1">
                 <strong>Reported :</strong>

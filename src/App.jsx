@@ -34,13 +34,20 @@ function App() {
         localStorage.setItem("faults", JSON.stringify(updated));
     }
 
-    const handleProofUpload = (index, proofImage) => {
+    const handleProofUpload = (index, value) => {
         const updated = [...faults];
-        updated[index].completionImage = proofImage;
-        updated[index].status = "Completed";
+
+        if (value === "Completed") {
+            updated[index].status = "Completed";
+        } else {
+            updated[index].completionImage = value;
+            updated[index].status = "Proof Submitted";
+        }
+
         setFaults(updated);
         localStorage.setItem("faults", JSON.stringify(updated));
     };
+
 
 
     const handleLogout = () => {
