@@ -1,77 +1,86 @@
 import { useState } from "react";
 
 function RoleLogin({ onLogin }) {
+    const [role, setRole] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("");
+    const [error, setError] = useState("");
 
-    const credentials = {
-        Admin: { email: "admin@example.com", password: "admin123" },
-        Student: { email: "student@example.com", password: "student123" },
-        Technician: { email: "technician@example.com", password: "tech123" }
-    };
-
-
-    const handleLogin = (event) => {
-        event.preventDefault();
-
-        if (!role) {
-            alert("Please select a role");
+    const handleLogin = () => {
+        if (!role || !email || !password) {
+            setError("Please fill in all fields to continue.");
             return;
         }
 
-        const valid = credentials[role];
-        if (!valid || email !== valid.email || password !== valid.password) {
-            alert("Invalid credentials. Please try again.");
-            return;
-        }
-
-        const user = { email, role };
+        const user = { role, email };
         localStorage.setItem("user", JSON.stringify(user));
         onLogin(user);
     };
 
     return (
-        <form onSubmit={handleLogin} className="max-w-sm mx-auto p-6 bg-white rounded shadow space-y-4 mt-6">
-            <h2 className="text-xl font-bold text-center">Login</h2>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-300">
+            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center text-blue-700 mb-6">
+                    Campus Fault Reporter
+                </h2>
 
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="p-3 border rounded block w-full"
-                required
-            />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email:
+                </label>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                        setEmail(e.target.value);
+                        setError("");
+                    }}
+                    placeholder="Enter your email"
+                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="p-3 border rounded block w-full"
-                required
-            />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Password:
+                </label>
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        setError("");
+                    }}
+                    placeholder="Enter your password"
+                    className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
-            <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="p-3 border rounded block w-full"
-                required
-            >
-                <option value="">Select Role</option>
-                <option value="Admin">Admin</option>
-                <option value="Student">Student</option>
-                <option value="Technician">Technician</option>
-            </select>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select your role:
+                </label>
+                <select
+                    value={role}
+                    onChange={(e) => {
+                        setRole(e.target.value);
+                        setError("");
+                    }}
+                    className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="">-- Choose Role --</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Student">Student</option>
+                    <option value="Technician">Technician</option>
+                </select>
 
-            <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition"
-            >
-                Login
-            </button>
-        </form>
+                {error && (
+                    <p className="text-red-500 text-sm mt-2">{error}</p>
+                )}
+
+                <button
+                    onClick={handleLogin}
+                    className="mt-6 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                >
+                    Login
+                </button>
+            </div>
+        </div>
     );
 }
 
