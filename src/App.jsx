@@ -38,7 +38,7 @@ function App() {
         localStorage.setItem("faults", JSON.stringify(updated));
     };
 
-    const handleReviewAction = (index, action, note = "") => {
+    const handleReviewAction = (index, action) => {
         const updated = [...faults];
 
         if (action === "approve") {
