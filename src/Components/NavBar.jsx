@@ -1,3 +1,4 @@
+import EngineeringIcon from '@mui/icons-material/Engineering';
 import { useState } from "react";
 
 function NavBar({ onNavigate }) {
@@ -6,7 +7,11 @@ function NavBar({ onNavigate }) {
     return (
         <nav className="bg-blue-600 text-white shadow-md">
             <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-                <h1 className="text-xl font-bold">Campus Fault Reporter</h1>
+                <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
+                    <EngineeringIcon className="text-orange-500" />
+                    Snap2Fix
+                </h1>
+
 
                 <button
                     className="md:hidden focus:outline-none"
