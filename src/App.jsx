@@ -1,61 +1,61 @@
-import { useState,useEffect } from 'react'
-import './App.css'
-// import Header from '../src/Components/Header.jsx'
-import FaultForm from '../src/Components/FaultForm.jsx'
+import { useState, useEffect } from 'react';
+import './App.css';
+import FaultForm from '../src/Components/FaultForm.jsx';
 import FaultCard from "../src/Components/FaultCard.jsx";
-import NavBar from '../src/Components/NavBar.jsx'
-import About from '../src/Components/About'
-// import TechnicianLogin from "../src/Components/TechnicianLogin.jsx";
-import RoleLogin from "../src/Components/RoleLogin.jsx"
+import NavBar from '../src/Components/NavBar.jsx';
+import About from '../src/Components/About';
+import RoleLogin from "../src/Components/RoleLogin.jsx";
 
 function App() {
     const [activePage, setActivePage] = useState("Login");
-
-    const[faults,setFaults] = useState([]);
+    const [faults, setFaults] = useState([]);
     const [user, setUser] = useState(() => {
         return JSON.parse(localStorage.getItem("user")) || null;
     });
 
-
-    useEffect(()=>{
-        const saved = JSON.parse(localStorage.getItem("faults")) || []
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem("faults")) || [];
         setFaults(saved);
-    },[]);
+    }, []);
 
     const handleNewFault = (fault) => {
-        const updated = [fault,...faults];
+        const updated = [fault, ...faults];
         setFaults(updated);
         localStorage.setItem("faults", JSON.stringify(updated));
     };
 
     const handleDelete = (indexToDelete) => {
-        const updated = faults.filter((_,i) => i !== indexToDelete);
+        const updated = faults.filter((_, i) => i !== indexToDelete);
         setFaults(updated);
         localStorage.setItem("faults", JSON.stringify(updated));
-    }
+    };
 
-    const handleProofUpload = (index, value) => {
+    const handleProofUpload = (index, imageUrl) => {
+        const updated = [...faults];
+        updated[index].completionImage = imageUrl;
+        updated[index].status = "Proof Submitted";
+        setFaults(updated);
+        localStorage.setItem("faults", JSON.stringify(updated));
+    };
+
+    const handleReviewAction = (index, action, note = "") => {
         const updated = [...faults];
 
-        if (value === "Completed") {
+        if (action === "approve") {
             updated[index].status = "Completed";
-        } else {
-            updated[index].completionImage = value;
-            updated[index].status = "Proof Submitted";
+        } else if (action === "not_accepted") {
+            updated[index].status = "Not Accepted";
+            delete updated[index].completionImage;
         }
 
         setFaults(updated);
         localStorage.setItem("faults", JSON.stringify(updated));
     };
 
-
-
     const handleLogout = () => {
         localStorage.removeItem("user");
         setUser(null);
     };
-
-
 
     return (
         <div className="min-h-screen bg-gray-100 p-4">
@@ -102,7 +102,8 @@ function App() {
                                         fault={fault}
                                         onDelete={() => handleDelete(index)}
                                         userRole={user.role}
-                                        onProofUpload={(proofImage) => handleProofUpload(index, proofImage)}
+                                        onProofUpload={(imageUrl) => handleProofUpload(index, imageUrl)}
+                                        onReview={(action, note) => handleReviewAction(index, action, note)}
                                     />
                                 ))
                             ) : (
@@ -116,4 +117,4 @@ function App() {
     );
 }
 
-export default App
+export default App;

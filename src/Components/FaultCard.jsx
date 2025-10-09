@@ -4,17 +4,20 @@ import ErrorIcon from '@mui/icons-material/Error';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import IconButton from '@mui/material/IconButton';
 
-function FaultCard({ fault, onDelete, userRole, onProofUpload }) {
+function FaultCard({ fault, onDelete, userRole, onProofUpload,onReview }) {
     return (
         <div className={`rounded-xl shadow-lg p-6 mb-6 max-w-md mx-auto border-2 transition duration-300 ease-in-out
-      ${fault.status === "Completed"
+  ${fault.status === "Completed"
             ? "bg-gradient-to-br from-white via-green-50 to-green-100 border-green-300"
             : fault.status === "Proof Submitted"
-                ? "bg-gradient-to-br from-white via-red-50 to-red-100 border-red-300"
-                : "bg-gradient-to-br from-white via-yellow-50 to-yellow-100 border-yellow-300"
+                ? "bg-gradient-to-br from-white via-orange-50 to-orange-100 border-orange-300"
+                : fault.status === "Not Accepted"
+                    ? "bg-gradient-to-br from-white via-red-50 to-red-100 border-red-400"
+                    : "bg-gradient-to-br from-white via-yellow-50 to-yellow-100 border-yellow-300"
         }`}
         >
-            {fault.image && (
+
+        {fault.image && (
                 <img
                     src={fault.image}
                     alt="Fault"
@@ -37,8 +40,8 @@ function FaultCard({ fault, onDelete, userRole, onProofUpload }) {
             <div className="text-sm text-gray-600 mb-1 flex items-center gap-2">
                 <strong>Status:</strong>
                 <span>{fault.status}</span>
-                {fault.status === "Pending" && <ErrorIcon className="text-red-700" />}
-                {fault.status === "Proof Submitted" && <ReportProblemIcon className="text-yellow-500" />}
+                {fault.status === "Pending" && <ErrorIcon className="text-yellow-200" />}
+                {fault.status === "Proof Submitted" && <ReportProblemIcon className="text-orange-500" />}
                 {fault.status === "Completed" && <CheckCircleIcon className="text-green-600" />}
             </div>
 
@@ -54,23 +57,34 @@ function FaultCard({ fault, onDelete, userRole, onProofUpload }) {
             )}
 
             {userRole === "Admin" && fault.status === "Proof Submitted" && (
-                <button
-                    onClick={() => onProofUpload("Completed")}
-                    className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
-                >
-                    Mark as Completed
-                </button>
+                <div className="mt-2 flex items-center gap-2">
+                    <button
+                        onClick={() => onReview("approve", "")}
+                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                    >
+                        Mark as Completed
+                    </button>
+
+                    <button
+                        onClick={() => onReview("not_accepted", "")}
+                        className="bg-rose-500 text-white px-3 py-1 rounded hover:bg-rose-600 transition"
+                    >
+                        Not Accepted
+                    </button>
+
+                </div>
             )}
 
             <div className="text-sm text-gray-600 mb-1">
                 <strong>Reported:</strong> {fault.timestamp}
             </div>
 
-            {userRole === "Technician" && fault.status === "Pending" && (
+            {userRole === "Technician" && (fault.status === "Pending" || fault.status === "Not Accepted") && (
                 <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         Upload Completion Proof
                     </label>
+
                     <div className="relative w-full">
                         <input
                             type="file"
@@ -80,7 +94,7 @@ function FaultCard({ fault, onDelete, userRole, onProofUpload }) {
                                 const file = e.target.files[0];
                                 if (file) {
                                     const imageUrl = URL.createObjectURL(file);
-                                    onProofUpload(imageUrl);
+                                    onProofUpload(imageUrl); // This will update status to "Proof Submitted"
                                 }
                             }}
                             className="absolute inset-0 opacity-0 cursor-pointer"
