@@ -5,17 +5,20 @@ function NavBar({ onNavigate }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <nav className="bg-blue-600 text-white shadow-md">
+        <nav className="bg-blue-600 text-white shadow-md sticky top-0 z-50">
             <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-                <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
-                    <EngineeringIcon className="text-orange-500" />
+                <h1
+                    className="text-2xl font-bold flex items-center gap-2 text-white cursor-pointer"
+                    onClick={() => onNavigate("Home")}
+                >
+                    <EngineeringIcon className="text-orange-400" />
                     Snap2Fix
                 </h1>
-
 
                 <button
                     className="md:hidden focus:outline-none"
                     onClick={() => setOpen(!open)}
+                    aria-label="Toggle navigation menu"
                 >
                     <svg
                         className="w-6 h-6"
@@ -39,14 +42,15 @@ function NavBar({ onNavigate }) {
                 </ul>
             </div>
 
-            {open && (
-                <ul className="md:hidden px-4 pb-4 space-y-2 text-sm font-medium">
-                    <li><button onClick={() => onNavigate("Login")} className="hover:underline">Login</button></li>
-                    <li><button onClick={() => onNavigate("About")} className="hover:underline">About</button></li>
-                    <li><button onClick={() => onNavigate("Contact")} className="hover:underline">Contact</button></li>
-                </ul>
-            )}
-
+            <ul
+                className={`md:hidden px-4 pb-4 space-y-2 text-sm font-medium transition-all duration-300 ${
+                    open ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+            >
+                <li><button onClick={() => onNavigate("Login")} className="hover:underline">Login</button></li>
+                <li><button onClick={() => onNavigate("About")} className="hover:underline">About</button></li>
+                <li><button onClick={() => onNavigate("Contact")} className="hover:underline">Contact</button></li>
+            </ul>
         </nav>
     );
 }

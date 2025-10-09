@@ -1,22 +1,40 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import Header from "../src/Components/Header.jsx";
 import FaultForm from '../src/Components/FaultForm.jsx';
 import FaultCard from "../src/Components/FaultCard.jsx";
 import NavBar from '../src/Components/NavBar.jsx';
 import About from '../src/Components/About';
 import RoleLogin from "../src/Components/RoleLogin.jsx";
+import Footer from "./Components/Footer.jsx";
 
 function App() {
     const [activePage, setActivePage] = useState("Login");
     const [faults, setFaults] = useState([]);
     const [user, setUser] = useState(() => {
-        return JSON.parse(localStorage.getItem("user")) || null;
+        try {
+            return JSON.parse(localStorage.getItem("user")) || null;
+        } catch {
+            return null;
+        }
     });
 
     useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem("faults")) || [];
-        setFaults(saved);
+        try {
+            const saved = JSON.parse(localStorage.getItem("faults")) || [];
+            setFaults(saved);
+        } catch {
+            setFaults([]);
+        }
     }, []);
+
+    useEffect(() => {
+        let title = "Snap2Fix – Report & Resolve";
+        if (activePage === "About") title = "About | Snap2Fix";
+        else if (activePage === "Contact") title = "Contact | Snap2Fix";
+        else if (user) title = `${user.role} | Snap2Fix`;
+        document.title = title;
+    }, [activePage, user]);
 
     const handleNewFault = (fault) => {
         const updated = [fault, ...faults];
@@ -40,14 +58,12 @@ function App() {
 
     const handleReviewAction = (index, action) => {
         const updated = [...faults];
-
         if (action === "approve") {
             updated[index].status = "Completed";
         } else if (action === "not_accepted") {
             updated[index].status = "Not Accepted";
             delete updated[index].completionImage;
         }
-
         setFaults(updated);
         localStorage.setItem("faults", JSON.stringify(updated));
     };
@@ -94,7 +110,7 @@ function App() {
                             <FaultForm onSubmit={handleNewFault} />
                         )}
 
-                        <div className="mt-6 px-4">
+                        <div className="mt-6 px-4 animate-fade-in">
                             {faults.length > 0 ? (
                                 faults.map((fault, index) => (
                                     <FaultCard
@@ -113,6 +129,7 @@ function App() {
                     </>
                 )
             )}
+            <Footer/>
         </div>
     );
 }
