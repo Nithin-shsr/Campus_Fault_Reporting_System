@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import Header from "../src/Components/Header.jsx";
 import FaultForm from '../src/Components/FaultForm.jsx';
 import FaultCard from "../src/Components/FaultCard.jsx";
 import NavBar from '../src/Components/NavBar.jsx';
